@@ -9,3 +9,4 @@ I did not find any suitable reference that says what is the best sampling point 
 possible sample point, see if one of them works, and then choose it as the right solution.
 The equation of CAN bus baudrate for STM32 MCUs is:
 Baudrate = APB1Clock / (Prescaler * (SJW + BS1 + BS2))
+
