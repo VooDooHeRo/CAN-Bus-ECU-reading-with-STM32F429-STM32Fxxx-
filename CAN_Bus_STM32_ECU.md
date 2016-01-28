@@ -9,4 +9,7 @@ I did not find any suitable reference that says what is the best sampling point 
 possible sample point, see if one of them works, and then choose it as the right solution.
 The equation of CAN bus baudrate for STM32 MCUs is:
 Baudrate = APB1Clock / (Prescaler * (SJW + BS1 + BS2))
+If you are not getting any CAN frames, then just press the button (your defined GPIO), wait a second or two, if nothing received yet, do it again until you get CAN frames :-)
 
+This example is inspired from the STM Cube's examples (STM324xG_EVAL/Examples/CAN/CAN_Networking).
+The codes may not work right away, as it's just a gist not a repo. but the idea is pretty simple and codes are handy, it helped me getting data from a Renault Kerax truck and a Mercedes Axor truck.

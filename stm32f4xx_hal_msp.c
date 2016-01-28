@@ -1,3 +1,5 @@
+#include "defines.h"
+
 /**
   * @brief CAN MSP Initialization 
   *        This function configures the hardware resources used in this example: 

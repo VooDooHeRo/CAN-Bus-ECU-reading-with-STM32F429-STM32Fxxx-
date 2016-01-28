@@ -1,3 +1,6 @@
+#include "defines.h"
+
+
 extern CAN_HandleTypeDef _canHandle;
 
 
