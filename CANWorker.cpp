@@ -13,6 +13,7 @@ CANWorker::CANWorker ()
   // I used STM32F429-Discovery blue button for jumping to next baudrate solution, use another GPIO (or another method) 
   //that suits you.
   BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_GPIO);
+  EXTI0_IRQHandler_Config();
   
   /*##- Start the Reception process and enable reception interrupt #########*/
   if(HAL_CAN_Receive_IT(&_canHandle, CAN_FIFO0) != HAL_OK)
@@ -258,5 +259,63 @@ void HAL_CAN_RxCpltCallback(CAN_HandleTypeDef* CanHandle)
 	{
 		/* Reception Error */
 		//Error_Handler();
+	}
+}
+
+
+uint32_t CANWorker::getAPB1Clock()
+{
+	RCC_ClkInitTypeDef clkInit;
+	uint32_t flashLatency;
+	HAL_RCC_GetClockConfig(&clkInit, &flashLatency);
+
+	uint32_t hclkClock = HAL_RCC_GetHCLKFreq();
+	uint8_t clockDivider = 1;
+	if (clkInit.APB1CLKDivider == RCC_HCLK_DIV1)
+		clockDivider = 1;
+	if (clkInit.APB1CLKDivider == RCC_HCLK_DIV2)
+		clockDivider = 2;
+	if (clkInit.APB1CLKDivider == RCC_HCLK_DIV4)
+		clockDivider = 4;
+	if (clkInit.APB1CLKDivider == RCC_HCLK_DIV8)
+		clockDivider = 8;
+	if (clkInit.APB1CLKDivider == RCC_HCLK_DIV16)
+		clockDivider = 16;
+
+	uint32_t apb1Clock = hclkClock / clockDivider;
+
+	return apb1Clock;
+}
+
+
+/**
+* @brief  Configures EXTI Line0 (connected to PA0 pin) in interrupt mode
+* @param  None
+* @retval None
+*/
+static void EXTI0_IRQHandler_Config(void)
+{
+	GPIO_InitTypeDef   GPIO_InitStructure;
+
+	/* Enable GPIOA clock */
+	__HAL_RCC_GPIOA_CLK_ENABLE();
+
+	/* Configure PA0 pin as input floating */
+	GPIO_InitStructure.Mode = GPIO_MODE_IT_FALLING;
+	GPIO_InitStructure.Pull = GPIO_PULLUP;
+	GPIO_InitStructure.Pin = GPIO_PIN_0;
+	HAL_GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+	/* Enable and set EXTI Line0 Interrupt to the lowest priority */
+	HAL_NVIC_SetPriority(EXTI0_IRQn, 2, 0);
+	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+}
+
+
+extern "C" void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+	if (GPIO_Pin == KEY_BUTTON_PIN)
+	{
+		flag = true;
 	}
 }
