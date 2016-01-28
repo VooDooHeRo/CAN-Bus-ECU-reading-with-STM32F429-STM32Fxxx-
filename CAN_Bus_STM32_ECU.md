@@ -1,4 +1,4 @@
-# Reading out ECU data using a STM32FXXX device (tested on STM32F429-Discovery)
+# Reading out ECU CAN bus using a STM32FXXX device (tested on STM32F429-Discovery)
 
 # The problem
 configuring the SJW, BS1, BS2 and Prescaler to achieve a desired baudrate and the Sample Point to be a correct value
